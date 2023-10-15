@@ -11,9 +11,16 @@ class AppTheme {
     useMaterial3   : true,
     colorSchemeSeed: colorSeed,
 
+    ///*Texts
+    textTheme: const TextTheme( 
+      titleLarge  : TextStyle( fontSize: 28, color: Colors.white ),
+      titleMedium : TextStyle( fontSize: 24, color: Colors.white ),
+      titleSmall  : TextStyle( fontSize: 20, color: Colors.black ),
+    ),
+
     ///* Scaffold Background Color
     scaffoldBackgroundColor: scaffoldBackgroundColor,
-    
+
   );
 
 }
