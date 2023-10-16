@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:inventario_app/config/config.dart';
 
 import 'views/data_table_view.dart';
+import 'views/form_add_product_view.dart';
 
 class InventaryScreen extends StatelessWidget {
   
@@ -41,23 +42,11 @@ class InventaryScreen extends StatelessWidget {
         body: const TabBarView(
           children: [
             MyPaginatedDataTable(),
-            AddProductView(),
+            FormAddProductView(),
           ],
         ),
       )
     );
   }
 
-}
-
-class AddProductView extends StatelessWidget {
-
-  const AddProductView({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return const Center(
-      child: Text('Add product view'),
-    );
-  }
 }
