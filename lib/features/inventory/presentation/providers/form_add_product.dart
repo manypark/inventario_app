@@ -1,27 +1,38 @@
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:inventario_app/features/shared/shared.dart';
 import 'package:reactive_forms/reactive_forms.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import 'product_provider.dart';
+import 'package:inventario_app/features/shared/shared.dart';
 import 'package:inventario_app/features/inventory/domain/entities/product.dart';
 
-final productProvider = StateNotifierProvider<ProductFormNotifier, ProductFormState>( (ref) {
-  return ProductFormNotifier();
+// ********************************************************************** || Provider || *********************************************************************
+final productFormProvider = StateNotifierProvider<ProductFormNotifier, ProductFormState>( (ref) {
+
+  final productStateProvider = ref.watch(productProvider.notifier);
+
+  return ProductFormNotifier( productNotifier: productStateProvider );
 });
 
+// ********************************************************************** || Notifier || **********************************************************************
 class ProductFormNotifier extends StateNotifier<ProductFormState> {
 
-  ProductFormNotifier():super( ProductFormState() );
+  final ProductNotifier productNotifier;
+  
+  ProductFormNotifier({
+    required this.productNotifier
+  }):super( ProductFormState() );
 
   onSubmit( Product product ) {
 
     state = state.copyWith( product:product );
 
-    print('state: $product');
+    productNotifier.addProduct(product);
 
   }
   
 }
 
+// ********************************************************************** || State || **********************************************************************
 class ProductFormState {
   
   final Product? product;

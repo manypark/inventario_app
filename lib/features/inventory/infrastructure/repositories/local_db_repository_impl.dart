@@ -1,9 +1,13 @@
 import 'package:inventario_app/features/inventory/domain/domain.dart';
+import 'package:inventario_app/features/inventory/infrastructure/infrastructure.dart';
 
 class LocalDbRepositoryImpl extends LocalDbRepository {
 
   final LocalDbDatasource datasource;
-  LocalDbRepositoryImpl(this.datasource);
+
+  LocalDbRepositoryImpl({
+    LocalDbDatasource? datasource
+  }): datasource = datasource ?? IsarDatasource();
 
   @override
   Future<void> addProduct(Product product) {

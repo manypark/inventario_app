@@ -7,6 +7,8 @@ import '../providers/form_add_product.dart';
 import 'package:inventario_app/config/config.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 
+import '../providers/product_provider.dart';
+
 class FormAddProductView extends StatelessWidget {
 
   const FormAddProductView({super.key});
@@ -27,7 +29,11 @@ class FormView extends ConsumerWidget {
   @override
   Widget build(BuildContext context, ref) {
 
-    final productState = ref.watch(productProvider);
+    final productState = ref.watch(productFormProvider);
+    final productDbProvider = ref.watch(productProvider);
+
+    print(productDbProvider.products);
+
     final form         = productState.form;
     final sizeWidth    = MediaQuery.sizeOf(context).width;
     final unit         = ['PZ', 'CJA'];
@@ -190,7 +196,7 @@ class FormView extends ConsumerWidget {
 
                       final productFormMapper = ProductMapper.jsonToEntity(form.value);
 
-                      ref.read(productProvider.notifier).onSubmit(productFormMapper);
+                      ref.read(productFormProvider.notifier).onSubmit(productFormMapper);
                     },
                     child    : const Text('Guardar', style: TextStyle( color: Colors.white, fontSize: 24 ),),
                   );
