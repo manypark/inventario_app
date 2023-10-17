@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:inventario_app/config/config.dart';
 
 class FormAddProductView extends StatelessWidget {
@@ -38,9 +39,10 @@ class FormView extends StatelessWidget {
       
             // Nombre producto
             TextFormField(
+              style          : const TextStyle( fontSize: 24 ),
               decoration: const InputDecoration(
                 labelText : 'Nombre del producto',
-                hintText  : 'Producto...',
+                hintText  : 'Producto',
                 border    : OutlineInputBorder(
                   borderRadius: BorderRadius.all( Radius.circular( 10 ) ),
                 )
@@ -56,8 +58,12 @@ class FormView extends StatelessWidget {
                 Expanded(
                   flex: 1,
                   child: TextFormField(
+                    style          : const TextStyle( fontSize: 24 ),
+                    inputFormatters: [
+                      FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
+                    ],
                     keyboardType: TextInputType.number,
-                    decoration: const InputDecoration(
+                    decoration  : const InputDecoration(
                       labelText : 'Stock',
                       hintText  : 'Stock',
                       border    : OutlineInputBorder(
@@ -97,13 +103,17 @@ class FormView extends StatelessWidget {
 
             const SizedBox( height: 20 ),
 
-            //Precio unitario, precio venta
+            // Precio unitario, precio venta
             Row(
               children: [
 
                 Expanded(
                   flex: 1,
                   child: TextFormField(
+                    style          : const TextStyle( fontSize: 24 ),
+                    inputFormatters: [
+                      FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
+                    ],
                     decoration: const InputDecoration(
                       labelText : 'Precio unitario',
                       hintText  : 'Precio',
@@ -119,6 +129,10 @@ class FormView extends StatelessWidget {
                 Expanded(
                   flex: 1,
                   child: TextFormField(
+                    style          : const TextStyle( fontSize: 24 ),
+                    inputFormatters: [
+                      FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
+                    ],
                     decoration: const InputDecoration(
                       labelText : 'Precio venta',
                       hintText  : 'Precio',
@@ -133,6 +147,7 @@ class FormView extends StatelessWidget {
 
             const SizedBox( height: 60 ),
 
+            // button guardar
             TextButton(
               style: ButtonStyle(
                 backgroundColor : MaterialStateProperty.resolveWith( getColor ),
