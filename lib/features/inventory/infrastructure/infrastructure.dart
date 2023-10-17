@@ -1,0 +1,1 @@
+export 'mappers/product_mapper.dart';

@@ -1,0 +1,1 @@
+export 'infrastructure/forms/product_form.dart';
