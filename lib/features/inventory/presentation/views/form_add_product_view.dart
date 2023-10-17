@@ -99,20 +99,22 @@ class FormView extends ConsumerWidget {
                       validationMessages: {
                         'required': (error) => 'La unidad no puede ser vacío'
                       },
-                      hint          : const Text('Unidad'),
+                      hint          : const Text('Unidad', style: TextStyle(fontSize: 16 ),),
                       enableFeedback: true,
                       borderRadius  : BorderRadius.circular(10),
+                      decoration    : const InputDecoration(
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.all( Radius.circular( 10 ) ),
+                        )
+                      ),
                       icon          : const Icon( Icons.keyboard_arrow_down_rounded, color: Color(0xffB0B7D9) , size: 34, ),
                       dropdownColor : Colors.grey.shade200,
                       elevation     : 2,
-                      isExpanded    : !true,
-                      onChanged     : (value) {
-
-                      },
-                      items : unit.map<DropdownMenuItem<String>>(( String value ) {
+                      isExpanded    : true,
+                      items         : unit.map<DropdownMenuItem<String>>(( String value ) {
                         return DropdownMenuItem<String>(
                           value: value,
-                          child: Text(value, style: const TextStyle( color: Colors.black ),),
+                          child: Text(value, style: const TextStyle( color: Colors.black, fontSize: 20 ),),
                         );
                       }).toList(),
                     ),
