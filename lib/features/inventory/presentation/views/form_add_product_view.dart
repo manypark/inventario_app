@@ -7,8 +7,6 @@ import '../providers/form_add_product.dart';
 import 'package:inventario_app/config/config.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 
-import '../providers/product_provider.dart';
-
 class FormAddProductView extends StatelessWidget {
 
   const FormAddProductView({super.key});
@@ -30,9 +28,6 @@ class FormView extends ConsumerWidget {
   Widget build(BuildContext context, ref) {
 
     final productState = ref.watch(productFormProvider);
-    final productDbProvider = ref.watch(productProvider);
-
-    print(productDbProvider.products);
 
     final form         = productState.form;
     final sizeWidth    = MediaQuery.sizeOf(context).width;

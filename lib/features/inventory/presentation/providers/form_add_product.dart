@@ -22,11 +22,13 @@ class ProductFormNotifier extends StateNotifier<ProductFormState> {
     required this.productNotifier
   }):super( ProductFormState() );
 
-  onSubmit( Product product ) {
+  onSubmit( Product product ) async {
+
+    state.form?.reset();
 
     state = state.copyWith( product:product );
 
-    productNotifier.addProduct(product);
+    await productNotifier.addProduct(product);
 
   }
   

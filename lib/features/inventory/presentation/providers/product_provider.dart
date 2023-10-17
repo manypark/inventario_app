@@ -13,9 +13,7 @@ class ProductNotifier extends StateNotifier<ProductState> {
 
   final LocalDbRepository localDbRepository;
 
-  ProductNotifier({ required this.localDbRepository }):super( ProductState() ) {
-    loadProducts();
-  }
+  ProductNotifier({ required this.localDbRepository }):super( ProductState() );
 
   Future<void> addProduct( Product product ) async {
     await localDbRepository.addProduct(product);

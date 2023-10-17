@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:inventario_app/features/inventory/domain/domain.dart';
 
-class MyPaginatedDataTable extends StatefulWidget {
+import '../providers/product_provider.dart';
+
+class MyPaginatedDataTable extends ConsumerStatefulWidget {
 
   const MyPaginatedDataTable({super.key});
 
@@ -8,41 +12,22 @@ class MyPaginatedDataTable extends StatefulWidget {
   MyPaginatedDataTableState createState() => MyPaginatedDataTableState();
 }
 
-class MyPaginatedDataTableState extends State<MyPaginatedDataTable> {
+class MyPaginatedDataTableState extends ConsumerState<MyPaginatedDataTable> {
 
-  int _rowsPerPage = 5;
+  int _rowsPerPage = 10;
   int _sortColumnIndex = 0;
   bool _sortAscending = true;
+  
+  @override
+  void initState() {
+    super.initState();
+    ref.read(productProvider.notifier).loadProducts();
+  }
 
-  final List<Map<String, String>> _dataList = [
-    {
-      'nombre_producto': 'Producto 1',
-      'unidad': 'PZ',
-      'stock': '10',
-      'precio_unitario': '\$10',
-      'precio_venta': '\$15',
-    },
-    {
-      'nombre_producto': 'Producto 2',
-      'unidad': 'CJA',
-      'stock': '5',
-      'precio_unitario': '\$12',
-      'precio_venta': '\$18',
-    },
-    {
-      'nombre_producto': 'Producto 3',
-      'unidad': 'PZ',
-      'stock': '15',
-      'precio_unitario': '\$10',
-      'precio_venta': '\$13',
-    },
-    // Agrega más datos aquí
-  ];
-
-  void sort<T>(Comparable<T> Function(Map<dynamic, dynamic> d) getField, int columnIndex, bool ascending) {
-    _dataList.sort((a, b) {
-      final Comparable<T> aValue = getField(a);
-      final Comparable<T> bValue = getField(b);
+  void sort<T>(Comparable<T> Function(Map<dynamic, dynamic> d) getField, int columnIndex, bool ascending, List<Product> dataList) {
+    dataList.sort((a, b) {
+      final Comparable<T> aValue = getField(a as Map);
+      final Comparable<T> bValue = getField(b as Map);
       return ascending ? Comparable.compare(aValue, bValue) : Comparable.compare(bValue, aValue);
     });
     setState(() {
@@ -55,6 +40,13 @@ class MyPaginatedDataTableState extends State<MyPaginatedDataTable> {
   Widget build(BuildContext context) {
 
     final sizeWidth = MediaQuery.sizeOf(context).width;
+    final productStateProvider = ref.watch(productProvider).products;
+
+    if( productStateProvider == null ) {
+      return const Scaffold( body: Center( child: CircularProgressIndicator() ) );
+    }
+
+    final List<Product> dataList = productStateProvider;
 
     return Scaffold(
       body: SingleChildScrollView(
@@ -62,7 +54,7 @@ class MyPaginatedDataTableState extends State<MyPaginatedDataTable> {
           columnSpacing: (sizeWidth * 0.1),
           showFirstLastButtons: true,
           rowsPerPage         : _rowsPerPage,
-          availableRowsPerPage: const [5, 10, 20, 30],
+          availableRowsPerPage: const [10, 20, 30],
           onRowsPerPageChanged: (int? value) {
             setState(() { 
               _rowsPerPage = value!; 
@@ -74,39 +66,39 @@ class MyPaginatedDataTableState extends State<MyPaginatedDataTable> {
             DataColumn(
               label : const Text('Nombre Producto'),
               onSort: (columnIndex, ascending) {
-                sort<String>((d) => d['nombre_producto']!, columnIndex, ascending);
+                sort<String>((d) => d['name']!, columnIndex, ascending, dataList);
               },
             ),
             DataColumn(
               label : const Text('Unidad'),
               onSort: (columnIndex, ascending) {
-                sort<String>((d) => d['unidad']!, columnIndex, ascending);
+                sort<String>((d) => d['unit']!, columnIndex, ascending, dataList);
               }
             ),
             DataColumn(
               label   : const Text('Stock'),
               tooltip : 'Numero de piezas de tu producto',
               onSort  : (columnIndex, ascending) {
-                sort<String>((d) => d['stock']!, columnIndex, ascending);
+                sort<String>((d) => d['stock']!, columnIndex, ascending, dataList);
               }
             ),
             DataColumn(
               label : const Text('Precio Unitario'),
               onSort: (columnIndex, ascending) {
-                sort<String>((d) => d['precio_unitario'].substring(1), columnIndex, ascending);
+                sort<String>((d) => d['priceUnit'].substring(1), columnIndex, ascending, dataList);
               }
             ),
             DataColumn(
               label : const Text('Precio Venta'),
               onSort: (columnIndex, ascending) {
-                sort<String>((d) => d['precio_venta'].substring(1), columnIndex, ascending);
+                sort<String>((d) => d['priceSale'].substring(1), columnIndex, ascending, dataList);
               }
             ),
             const DataColumn(
               label : Text('Actions'),
             ),
           ],
-          source: MyDataTableSource(_dataList),
+          source: MyDataTableSource(dataList),
         ),
       ),
     );
@@ -115,23 +107,23 @@ class MyPaginatedDataTableState extends State<MyPaginatedDataTable> {
 
 class MyDataTableSource extends DataTableSource {
 
-  final List<Map<String, String>> _dataList;
+  final List<Product> dataList;
 
-  MyDataTableSource(this._dataList);
+  MyDataTableSource(this.dataList);
 
   @override
   DataRow getRow(int index) {
 
-    final data = _dataList[index];
+    final data = dataList[index];
 
     return DataRow.byIndex(
       index: index,
       cells: [
-        DataCell( Text(data['nombre_producto'] ?? 'nombre_producto' ) ),
-        DataCell( Text(data['unidad'] ?? 'unidad' ) ),
-        DataCell( Text(data['stock'] ?? 'stock' ) ),
-        DataCell( Text(data['precio_unitario'] ?? 'precio_unitario' ) ),
-        DataCell( Text(data['precio_venta'] ?? 'precio_venta' ) ),
+        DataCell( Text( data.name ) ),
+        DataCell( Text( data.unit ) ),
+        DataCell( Text( data.stock.toString() ) ),
+        DataCell( Text( '\$ ${data.priceUnit.toString()}' ) ),
+        DataCell( Text( '\$ ${data.priceSale.toString()}' ) ),
         DataCell(
           Row(
             children: [
@@ -160,7 +152,7 @@ class MyDataTableSource extends DataTableSource {
   bool get isRowCountApproximate => false;
 
   @override
-  int get rowCount => _dataList.length;
+  int get rowCount => dataList.length;
 
   @override
   int get selectedRowCount => 0;
