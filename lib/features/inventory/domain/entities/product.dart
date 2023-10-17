@@ -1,7 +1,11 @@
+import 'package:isar/isar.dart';
+part 'product.g.dart';
 
+@collection
 class Product {
 
-  String id;
+  Id isarId = Isar.autoIncrement;
+
   String name;
   int stock;
   String unit;
@@ -9,7 +13,6 @@ class Product {
   int priceSale;
   
   Product({
-    required this.id,
     required this.name,
     required this.stock,
     required this.unit,
@@ -17,9 +20,8 @@ class Product {
     required this.priceSale,
   });
   
-
   @override
   String toString() {
-    return 'id: $id, name: $name, stock: $stock, unit: $unit, priceUnit: $priceUnit, priceSale: $priceSale';
+    return 'name: $name, stock: $stock, unit: $unit, priceUnit: $priceUnit, priceSale: $priceSale';
   }
 }
