@@ -17,7 +17,7 @@ final productFormProvider = StateNotifierProvider<ProductFormNotifier, ProductFo
 class ProductFormNotifier extends StateNotifier<ProductFormState> {
 
   final ProductNotifier productNotifier;
-  
+
   ProductFormNotifier({
     required this.productNotifier
   }):super( ProductFormState() );

@@ -1,29 +1,37 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:inventario_app/features/inventory/domain/domain.dart';
-import 'package:inventario_app/features/inventory/infrastructure/infrastructure.dart';
+// import 'package:inventario_app/features/inventory/infrastructure/infrastructure.dart';
 
 // ********************************************************************** || Provider || *********************************************************************
 final productProvider = StateNotifierProvider<ProductNotifier, ProductState>((ref) {
-  return ProductNotifier(localDbRepository: LocalDbRepositoryImpl() );
+  // return ProductNotifier(localDbRepository: LocalDbRepositoryImpl() );
+  return ProductNotifier();
 });
 
 // ********************************************************************** || Notifier || **********************************************************************
 class ProductNotifier extends StateNotifier<ProductState> {
 
-  final LocalDbRepository localDbRepository;
+  // final LocalDbRepository localDbRepository;
 
-  ProductNotifier({ required this.localDbRepository }):super( ProductState() );
+  // ProductNotifier({ required this.localDbRepository }):super( ProductState() );
+  ProductNotifier():super( ProductState() );
 
   Future<void> addProduct( Product product ) async {
-    await localDbRepository.addProduct(product);
+
+    // await localDbRepository.addProduct(product);
+
+    state.products?.add(product);
+    final newProduct = state.products;
+
+    state = state.copyWith( products:newProduct );
   }
 
   Future<void> loadProducts() async {
 
-    final products = await localDbRepository.getProducts();
+    // final products = await localDbRepository.getProducts();
 
-    state = state.copyWith( products:products );
+    state = state.copyWith( products:[] );
   }
   
 }
@@ -31,12 +39,12 @@ class ProductNotifier extends StateNotifier<ProductState> {
 class ProductState {
 
   final Product? editProduct;
-  final List<Product>? products;
+  List<Product>? products;
 
   ProductState({
-    this.editProduct, 
-    this.products
-  });
+    this.editProduct,
+    List<Product>? products,
+  }): products = products ?? [];
 
   ProductState copyWith({
     Product? editProduct,

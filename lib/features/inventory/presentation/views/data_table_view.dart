@@ -21,7 +21,7 @@ class MyPaginatedDataTableState extends ConsumerState<MyPaginatedDataTable> {
   @override
   void initState() {
     super.initState();
-    ref.read(productProvider.notifier).loadProducts();
+    // ref.read(productProvider.notifier).loadProducts();
   }
 
   void sort<T>(Comparable<T> Function(Map<dynamic, dynamic> d) getField, int columnIndex, bool ascending, List<Product> dataList) {
@@ -42,11 +42,11 @@ class MyPaginatedDataTableState extends ConsumerState<MyPaginatedDataTable> {
     final sizeWidth = MediaQuery.sizeOf(context).width;
     final productStateProvider = ref.watch(productProvider).products;
 
-    if( productStateProvider == null ) {
-      return const Scaffold( body: Center( child: CircularProgressIndicator() ) );
-    }
+    // if( productStateProvider == null ) {
+    //   return const Scaffold( body: Center( child: CircularProgressIndicator() ) );
+    // }
 
-    final List<Product> dataList = productStateProvider;
+    final List<Product> dataList = productStateProvider ?? [];
 
     return Scaffold(
       body: SingleChildScrollView(

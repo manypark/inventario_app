@@ -1,5 +1,5 @@
 import 'package:isar/isar.dart';
-import 'package:path_provider/path_provider.dart';
+import 'package:path_provider/path_provider.dart'; 
 
 import 'package:inventario_app/features/inventory/domain/domain.dart';
 
@@ -17,7 +17,7 @@ class IsarDatasource extends LocalDbDatasource {
 
     if( Isar.instanceNames.isEmpty ) {
       return await Isar.open( 
-        [ProductSchema ], 
+        [ ProductSchema ], 
         directory: dir.path,
         inspector: true 
       );
@@ -36,6 +36,7 @@ class IsarDatasource extends LocalDbDatasource {
       await isar.writeTxn(() async {
         await isar.products.put(product);
       });
+
       
     } catch (e) {
       throw Exception(e.toString());
@@ -51,6 +52,7 @@ class IsarDatasource extends LocalDbDatasource {
       await isar.writeTxn(() async {
         await isar.products.delete(idProduct);
       });
+
     } catch (e) {
       throw Exception(e.toString());
     }
