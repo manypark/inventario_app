@@ -33,6 +33,17 @@ class FormView extends ConsumerWidget {
     final sizeWidth    = MediaQuery.sizeOf(context).width;
     final unit         = ['PZ', 'CJA'];
 
+    void showSnackBar( BuildContext context, String message ) {
+      ScaffoldMessenger.of(context).hideCurrentSnackBar();
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content      : Text(message),
+          showCloseIcon: true,
+          duration     : const Duration( seconds: 3 ),
+        )
+      );
+    }
+
     Color getColor( Set<MaterialState> states ) {
       return states.contains( MaterialState.disabled ) ? Colors.grey.shade800 : colorSeed;
     }
@@ -192,6 +203,8 @@ class FormView extends ConsumerWidget {
                       final productFormMapper = ProductMapper.jsonToEntity(form.value);
 
                       ref.read(productFormProvider.notifier).onSubmit(productFormMapper);
+
+                      showSnackBar( context, 'Producto nuevo agregado' );
                     },
                     child    : const Text('Guardar', style: TextStyle( color: Colors.white, fontSize: 24 ),),
                   );

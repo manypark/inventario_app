@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:inventario_app/features/inventory/domain/domain.dart';
+import 'package:inventario_app/features/inventory/infrastructure/infrastructure.dart';
 // import 'package:inventario_app/features/inventory/infrastructure/infrastructure.dart';
 
 // ********************************************************************** || Provider || *********************************************************************
@@ -31,15 +32,56 @@ class ProductNotifier extends StateNotifier<ProductState> {
 
     // final products = await localDbRepository.getProducts();
 
-    state = state.copyWith( products:[] );
+    final List<Product> newProducts = [];
+    final List<Map<String, dynamic>> staticProducts = [
+    {
+      "name" : "Nutri leche",
+      "stock" : "100",
+      "unit" : "PZ",
+      "priceUnit" : "18",
+      "priceSale" : "23",
+    },
+    {
+      "name" : "Santa clara leche",
+      "stock" : "80",
+      "unit" : "PZ",
+      "priceUnit" : "23",
+      "priceSale" : "27",
+    },
+    {
+      "name" : "Yurecuaro",
+      "stock" : "70",
+      "unit" : "PZ",
+      "priceUnit" : "10",
+      "priceSale" : "12",
+    },
+  ];
+
+    newProducts.addAll( staticProducts.map( (p) => ProductMapper.jsonToEntity(p) ).toList());
+
+    state = state.copyWith( products:newProducts );
+
   }
-  
+
+  Future<void> searchProduct( String product ) async {
+
+    final searchProduct = state.products?.where((p) => p.name.toLowerCase().contains( product.toLowerCase() ) ).toList();
+
+    state = state.copyWith( products: searchProduct );
+  }
+
+  Future<void> deleteProduct( String nameProduct ) async {
+
+    final newFilterListProduct = state.products?.where((p) => p.name.toLowerCase() != nameProduct.toLowerCase() ).toList();
+
+    state = state.copyWith( products: newFilterListProduct );
+  }
 }
 // ********************************************************************** || State || ************************************************************************
 class ProductState {
 
   final Product? editProduct;
-  List<Product>? products;
+  final List<Product>? products;
 
   ProductState({
     this.editProduct,

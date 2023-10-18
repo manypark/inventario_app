@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:inventario_app/features/inventory/domain/domain.dart';
 
-import '../providers/product_provider.dart';
+// import 'package:inventario_app/config/config.dart';
+import 'package:inventario_app/features/inventory/domain/domain.dart';
+import 'package:inventario_app/features/inventory/presentation/providers/providers.dart';
+
 
 class MyPaginatedDataTable extends ConsumerStatefulWidget {
 
@@ -17,12 +19,7 @@ class MyPaginatedDataTableState extends ConsumerState<MyPaginatedDataTable> {
   int _rowsPerPage = 10;
   int _sortColumnIndex = 0;
   bool _sortAscending = true;
-  
-  @override
-  void initState() {
-    super.initState();
-    // ref.read(productProvider.notifier).loadProducts();
-  }
+  TextEditingController controller = TextEditingController();
 
   void sort<T>(Comparable<T> Function(Map<dynamic, dynamic> d) getField, int columnIndex, bool ascending, List<Product> dataList) {
     dataList.sort((a, b) {
@@ -37,6 +34,11 @@ class MyPaginatedDataTableState extends ConsumerState<MyPaginatedDataTable> {
   }
 
   @override
+  void dispose() {
+    controller.dispose();
+    super.dispose();
+  }
+  @override
   Widget build(BuildContext context) {
 
     final sizeWidth = MediaQuery.sizeOf(context).width;
@@ -46,11 +48,50 @@ class MyPaginatedDataTableState extends ConsumerState<MyPaginatedDataTable> {
     //   return const Scaffold( body: Center( child: CircularProgressIndicator() ) );
     // }
 
-    final List<Product> dataList = productStateProvider ?? [];
+    List<Product> dataList = productStateProvider ?? [];
 
     return Scaffold(
       body: SingleChildScrollView(
         child: PaginatedDataTable(
+          header       : Row(
+            children: [
+
+              Expanded(
+                flex: 3,
+                child: TextFormField(
+                  controller        : controller,
+                  onEditingComplete : () async {
+
+                    if( controller.text == '' ) {
+                      ref.read(productProvider.notifier).loadProducts();
+                      return;
+                    }
+                    
+                    await ref.read(productProvider.notifier).searchProduct( controller.text );
+                  },
+                  decoration: const InputDecoration(
+                    hintText: 'Buscar producto',
+                  ),
+                ),
+              ),
+
+              Expanded(
+                flex: 1,
+                child: TextButton(
+                  onPressed: () {
+                    ref.read(productProvider.notifier).loadProducts();
+                  }, 
+                  style: ButtonStyle(
+                      backgroundColor : const MaterialStatePropertyAll( Colors.amber ),
+                      padding         : const MaterialStatePropertyAll( EdgeInsets.all(12)),
+                      minimumSize     : MaterialStatePropertyAll( Size((sizeWidth * 0.2), 70) ),
+                  ),
+                  child: const Text('Cargar productos', style: TextStyle( color: Colors.white, fontSize: 24 ),),
+                ),
+              ),
+
+            ],
+          ),
           columnSpacing: (sizeWidth * 0.1),
           showFirstLastButtons: true,
           rowsPerPage         : _rowsPerPage,
@@ -98,7 +139,7 @@ class MyPaginatedDataTableState extends ConsumerState<MyPaginatedDataTable> {
               label : Text('Actions'),
             ),
           ],
-          source: MyDataTableSource(dataList),
+          source          : MyDataTableSource(dataList, ref.read(productProvider.notifier).deleteProduct, context ),
         ),
       ),
     );
@@ -108,8 +149,30 @@ class MyPaginatedDataTableState extends ConsumerState<MyPaginatedDataTable> {
 class MyDataTableSource extends DataTableSource {
 
   final List<Product> dataList;
+  final Future<void> Function(String) deleteProduct;
+  final BuildContext context;
 
-  MyDataTableSource(this.dataList);
+  MyDataTableSource(this.dataList, this.deleteProduct, this.context);
+
+  void openDialog( BuildContext context, String nameProduct ) {
+
+    showDialog(
+      context           : context,
+      barrierDismissible: false,
+      builder           : (context) => AlertDialog(
+        title   : const Text('¿ Estas seguro ?'),
+        content : Text('Deseas eliminar este producto: $nameProduct'),
+        actions : [
+          TextButton(onPressed: () {
+            Navigator.pop(context);
+          }, child: const Text('Cancelar') ),
+          FilledButton(onPressed: () {
+            deleteProduct(nameProduct);
+            Navigator.pop(context);
+          }, child: const Text('Aceptar') ),
+        ],
+      ) );
+  }
 
   @override
   DataRow getRow(int index) {
@@ -132,14 +195,18 @@ class MyDataTableSource extends DataTableSource {
                 splashColor : Colors.transparent,
                 color       : Colors.green,
                 icon        : const Icon(Icons.edit),
-                onPressed   : () {},
+                onPressed   : () {
+
+                },
               ),
               IconButton(
                 hoverColor  : Colors.transparent,
                 splashColor : Colors.transparent,
                 color       : Colors.red,
                 icon        : const Icon(Icons.delete_forever),
-                onPressed   : () {},
+                onPressed   : () async {
+                  openDialog( context, data.name );
+                },
               ),
             ],
           )
