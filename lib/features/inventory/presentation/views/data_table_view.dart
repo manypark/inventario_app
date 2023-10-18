@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-// import 'package:inventario_app/config/config.dart';
+import 'package:inventario_app/features/shared/shared.dart';
 import 'package:inventario_app/features/inventory/domain/domain.dart';
 import 'package:inventario_app/features/inventory/presentation/providers/providers.dart';
 
@@ -66,7 +66,7 @@ class MyPaginatedDataTableState extends ConsumerState<MyPaginatedDataTable> {
                       ref.read(productProvider.notifier).loadProducts();
                       return;
                     }
-                    
+
                     await ref.read(productProvider.notifier).searchProduct( controller.text );
                   },
                   decoration: const InputDecoration(
@@ -139,7 +139,12 @@ class MyPaginatedDataTableState extends ConsumerState<MyPaginatedDataTable> {
               label : Text('Actions'),
             ),
           ],
-          source          : MyDataTableSource(dataList, ref.read(productProvider.notifier).deleteProduct, context ),
+          source          : MyDataTableSource(
+            dataList, 
+            ref.read(productProvider.notifier).deleteProduct,
+            ref.read(productFormProvider.notifier).initForm,
+            context
+          ),
         ),
       ),
     );
@@ -150,26 +155,57 @@ class MyDataTableSource extends DataTableSource {
 
   final List<Product> dataList;
   final Future<void> Function(String) deleteProduct;
+  final Function(Product) initFormProduct;
   final BuildContext context;
 
-  MyDataTableSource(this.dataList, this.deleteProduct, this.context);
+  MyDataTableSource(this.dataList, this.deleteProduct, this.initFormProduct, this.context);
 
-  void openDialog( BuildContext context, String nameProduct ) {
+  void openDialogForm(BuildContext context, Product product ) {
+    showDialog(
+      context           : context,
+      barrierDismissible: true,
+      useSafeArea       : true,
+      builder           : (context) {
+        return AlertDialog(
+          title  : Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              const Text('Editar producto'),
+              IconButton(onPressed: (){
+                Navigator.pop(context);
+              }, icon: const Icon( Icons.cancel, size: 40,) )
+            ],
+          ),
+          content: const FormViewAddProduct(),
+        );
+      },
+    );
+  }
+
+  void openDialog( BuildContext context, Product product ) {
 
     showDialog(
       context           : context,
       barrierDismissible: false,
       builder           : (context) => AlertDialog(
         title   : const Text('¿ Estas seguro ?'),
-        content : Text('Deseas eliminar este producto: $nameProduct'),
+        content : Text('Deseas eliminar este producto: ${product.name}'),
         actions : [
-          TextButton(onPressed: () {
-            Navigator.pop(context);
-          }, child: const Text('Cancelar') ),
-          FilledButton(onPressed: () {
-            deleteProduct(nameProduct);
-            Navigator.pop(context);
-          }, child: const Text('Aceptar') ),
+
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            child: const Text('Cancelar')
+          ),
+
+          FilledButton(
+            onPressed: () {
+              deleteProduct(product.name);
+              Navigator.pop(context);
+            }, 
+            child: const Text('Aceptar'),
+          ),
         ],
       ) );
   }
@@ -196,7 +232,8 @@ class MyDataTableSource extends DataTableSource {
                 color       : Colors.green,
                 icon        : const Icon(Icons.edit),
                 onPressed   : () {
-
+                  initFormProduct( data );
+                  openDialogForm(context, data);
                 },
               ),
               IconButton(
@@ -205,7 +242,7 @@ class MyDataTableSource extends DataTableSource {
                 color       : Colors.red,
                 icon        : const Icon(Icons.delete_forever),
                 onPressed   : () async {
-                  openDialog( context, data.name );
+                  openDialog( context, data );
                 },
               ),
             ],

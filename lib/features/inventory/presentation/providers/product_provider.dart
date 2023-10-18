@@ -35,6 +35,7 @@ class ProductNotifier extends StateNotifier<ProductState> {
     final List<Product> newProducts = [];
     final List<Map<String, dynamic>> staticProducts = [
     {
+      "id":1,
       "name" : "Nutri leche",
       "stock" : "100",
       "unit" : "PZ",
@@ -42,6 +43,7 @@ class ProductNotifier extends StateNotifier<ProductState> {
       "priceSale" : "23",
     },
     {
+      "id":2,
       "name" : "Santa clara leche",
       "stock" : "80",
       "unit" : "PZ",
@@ -49,6 +51,7 @@ class ProductNotifier extends StateNotifier<ProductState> {
       "priceSale" : "27",
     },
     {
+      "id":3,
       "name" : "Yurecuaro",
       "stock" : "70",
       "unit" : "PZ",
@@ -75,6 +78,18 @@ class ProductNotifier extends StateNotifier<ProductState> {
     final newFilterListProduct = state.products?.where((p) => p.name.toLowerCase() != nameProduct.toLowerCase() ).toList();
 
     state = state.copyWith( products: newFilterListProduct );
+  }
+
+  Future<void> editProduct( Product productEdit, Product oldProduct ) async {
+
+    final productToEdit = state.products?.where((p) => p.name.toLowerCase() == oldProduct.name.toLowerCase() ).first;
+
+    deleteProduct(productToEdit!.name);
+
+    state.products?.add(productEdit);
+    final newListProduct = state.products;
+
+    state = state.copyWith( products: newListProduct );
   }
 }
 // ********************************************************************** || State || ************************************************************************
