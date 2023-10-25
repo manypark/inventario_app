@@ -7,8 +7,8 @@ class ProductMapper {
     name      : json['name'], 
     stock     : int.parse(json['stock']), 
     unit      : json['unit'], 
-    priceUnit : int.parse(json['priceUnit']),
-    priceSale : int.parse(json['priceSale'])
+    priceUnit : double.parse(json['priceUnit']),
+    priceSale : double.parse(json['priceSale'])
   );
   
 }

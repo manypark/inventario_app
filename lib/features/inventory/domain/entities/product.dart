@@ -9,8 +9,8 @@ class Product {
   String name;
   int stock;
   String unit;
-  int priceUnit;
-  int priceSale;
+  double priceUnit;
+  double priceSale;
   
   Product({
     required this.name,

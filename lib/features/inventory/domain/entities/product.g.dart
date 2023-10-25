@@ -15,7 +15,6 @@ extension GetProductCollection on Isar {
 
 const ProductSchema = CollectionSchema(
   name: r'Product',
-  // id: 721139403729,
   id: -6222113721139403729,
   properties: {
     r'name': PropertySchema(
@@ -26,12 +25,12 @@ const ProductSchema = CollectionSchema(
     r'priceSale': PropertySchema(
       id: 1,
       name: r'priceSale',
-      type: IsarType.long,
+      type: IsarType.double,
     ),
     r'priceUnit': PropertySchema(
       id: 2,
       name: r'priceUnit',
-      type: IsarType.long,
+      type: IsarType.double,
     ),
     r'stock': PropertySchema(
       id: 3,
@@ -76,8 +75,8 @@ void _productSerialize(
   Map<Type, List<int>> allOffsets,
 ) {
   writer.writeString(offsets[0], object.name);
-  writer.writeLong(offsets[1], object.priceSale);
-  writer.writeLong(offsets[2], object.priceUnit);
+  writer.writeDouble(offsets[1], object.priceSale);
+  writer.writeDouble(offsets[2], object.priceUnit);
   writer.writeLong(offsets[3], object.stock);
   writer.writeString(offsets[4], object.unit);
 }
@@ -90,8 +89,8 @@ Product _productDeserialize(
 ) {
   final object = Product(
     name: reader.readString(offsets[0]),
-    priceSale: reader.readLong(offsets[1]),
-    priceUnit: reader.readLong(offsets[2]),
+    priceSale: reader.readDouble(offsets[1]),
+    priceUnit: reader.readDouble(offsets[2]),
     stock: reader.readLong(offsets[3]),
     unit: reader.readString(offsets[4]),
   );
@@ -109,9 +108,9 @@ P _productDeserializeProp<P>(
     case 0:
       return (reader.readString(offset)) as P;
     case 1:
-      return (reader.readLong(offset)) as P;
+      return (reader.readDouble(offset)) as P;
     case 2:
-      return (reader.readLong(offset)) as P;
+      return (reader.readDouble(offset)) as P;
     case 3:
       return (reader.readLong(offset)) as P;
     case 4:
@@ -395,46 +394,54 @@ extension ProductQueryFilter
   }
 
   QueryBuilder<Product, Product, QAfterFilterCondition> priceSaleEqualTo(
-      int value) {
+    double value, {
+    double epsilon = Query.epsilon,
+  }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
         property: r'priceSale',
         value: value,
+        epsilon: epsilon,
       ));
     });
   }
 
   QueryBuilder<Product, Product, QAfterFilterCondition> priceSaleGreaterThan(
-    int value, {
+    double value, {
     bool include = false,
+    double epsilon = Query.epsilon,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
         include: include,
         property: r'priceSale',
         value: value,
+        epsilon: epsilon,
       ));
     });
   }
 
   QueryBuilder<Product, Product, QAfterFilterCondition> priceSaleLessThan(
-    int value, {
+    double value, {
     bool include = false,
+    double epsilon = Query.epsilon,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.lessThan(
         include: include,
         property: r'priceSale',
         value: value,
+        epsilon: epsilon,
       ));
     });
   }
 
   QueryBuilder<Product, Product, QAfterFilterCondition> priceSaleBetween(
-    int lower,
-    int upper, {
+    double lower,
+    double upper, {
     bool includeLower = true,
     bool includeUpper = true,
+    double epsilon = Query.epsilon,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.between(
@@ -443,51 +450,60 @@ extension ProductQueryFilter
         includeLower: includeLower,
         upper: upper,
         includeUpper: includeUpper,
+        epsilon: epsilon,
       ));
     });
   }
 
   QueryBuilder<Product, Product, QAfterFilterCondition> priceUnitEqualTo(
-      int value) {
+    double value, {
+    double epsilon = Query.epsilon,
+  }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
         property: r'priceUnit',
         value: value,
+        epsilon: epsilon,
       ));
     });
   }
 
   QueryBuilder<Product, Product, QAfterFilterCondition> priceUnitGreaterThan(
-    int value, {
+    double value, {
     bool include = false,
+    double epsilon = Query.epsilon,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
         include: include,
         property: r'priceUnit',
         value: value,
+        epsilon: epsilon,
       ));
     });
   }
 
   QueryBuilder<Product, Product, QAfterFilterCondition> priceUnitLessThan(
-    int value, {
+    double value, {
     bool include = false,
+    double epsilon = Query.epsilon,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.lessThan(
         include: include,
         property: r'priceUnit',
         value: value,
+        epsilon: epsilon,
       ));
     });
   }
 
   QueryBuilder<Product, Product, QAfterFilterCondition> priceUnitBetween(
-    int lower,
-    int upper, {
+    double lower,
+    double upper, {
     bool includeLower = true,
     bool includeUpper = true,
+    double epsilon = Query.epsilon,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.between(
@@ -496,6 +512,7 @@ extension ProductQueryFilter
         includeLower: includeLower,
         upper: upper,
         includeUpper: includeUpper,
+        epsilon: epsilon,
       ));
     });
   }
@@ -876,13 +893,13 @@ extension ProductQueryProperty
     });
   }
 
-  QueryBuilder<Product, int, QQueryOperations> priceSaleProperty() {
+  QueryBuilder<Product, double, QQueryOperations> priceSaleProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'priceSale');
     });
   }
 
-  QueryBuilder<Product, int, QQueryOperations> priceUnitProperty() {
+  QueryBuilder<Product, double, QQueryOperations> priceUnitProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'priceUnit');
     });

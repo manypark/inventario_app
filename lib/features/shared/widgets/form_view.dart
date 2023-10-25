@@ -126,7 +126,7 @@ class FormViewAddProduct extends ConsumerWidget {
                       },
                       style          : const TextStyle( fontSize: 24 ),
                       inputFormatters: [
-                        FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
+                        FilteringTextInputFormatter.allow(RegExp(r'[0-9.]')),
                       ],
                       decoration: const InputDecoration(
                         labelText : 'Precio mayoreo',
@@ -149,7 +149,7 @@ class FormViewAddProduct extends ConsumerWidget {
                       },
                       style          : const TextStyle( fontSize: 24 ),
                       inputFormatters: [
-                        FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
+                        FilteringTextInputFormatter.allow(RegExp(r'[0-9.]')),
                       ],
                       decoration: const InputDecoration(
                         labelText : 'Precio venta',
