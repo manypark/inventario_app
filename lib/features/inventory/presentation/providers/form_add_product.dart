@@ -34,10 +34,9 @@ class ProductFormNotifier extends StateNotifier<ProductFormState> {
 
   void onSubmitEdit( Product newProduct ) async {
 
+    await productNotifier.editProduct( state.product!.isarId, newProduct );
+
     state.form?.reset();
-
-    await productNotifier.editProduct(newProduct, state.product! );
-
   }
 
   void initForm( Product product ) {

@@ -65,6 +65,8 @@ class IsarDatasource extends LocalDbDatasource {
 
       final isar = await db;
 
+      product.isarId = idProduct;
+
       await isar.writeTxn(() async {
         await isar.products.put(product);
       });
@@ -84,7 +86,7 @@ class IsarDatasource extends LocalDbDatasource {
   @override
   Future<dynamic> getProductByName( String nameProduct ) async {
     final isar = await db;
-    return await isar.products.filter().nameContains(nameProduct).findAll();
+    return await isar.products.filter().nameContains(nameProduct, caseSensitive: false).findAll();
   }
   
 }

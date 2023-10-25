@@ -44,11 +44,11 @@ class MyPaginatedDataTableState extends ConsumerState<MyPaginatedDataTable> {
     final sizeWidth = MediaQuery.sizeOf(context).width;
     final productStateProvider = ref.watch(productProvider).products;
 
-    // if( productStateProvider == null ) {
-    //   return const Scaffold( body: Center( child: CircularProgressIndicator() ) );
-    // }
+    if( productStateProvider == null ) {
+      return const Scaffold( body: Center( child: CircularProgressIndicator() ) );
+    }
 
-    List<Product> dataList = productStateProvider ?? [];
+    List<Product> dataList = productStateProvider;
 
     return Scaffold(
       body: SingleChildScrollView(
@@ -75,20 +75,20 @@ class MyPaginatedDataTableState extends ConsumerState<MyPaginatedDataTable> {
                 ),
               ),
 
-              Expanded(
-                flex: 1,
-                child: TextButton(
-                  onPressed: () {
-                    ref.read(productProvider.notifier).loadProducts();
-                  }, 
-                  style: ButtonStyle(
-                      backgroundColor : const MaterialStatePropertyAll( Colors.amber ),
-                      padding         : const MaterialStatePropertyAll( EdgeInsets.all(12)),
-                      minimumSize     : MaterialStatePropertyAll( Size((sizeWidth * 0.2), 70) ),
-                  ),
-                  child: const Text('Cargar productos', style: TextStyle( color: Colors.white, fontSize: 24 ),),
-                ),
-              ),
+              // Expanded(
+              //   flex: 1,
+              //   child: TextButton(
+              //     onPressed: () {
+              //       ref.read(productProvider.notifier).loadProducts();
+              //     }, 
+              //     style: ButtonStyle(
+              //         backgroundColor : const MaterialStatePropertyAll( Colors.amber ),
+              //         padding         : const MaterialStatePropertyAll( EdgeInsets.all(12)),
+              //         minimumSize     : MaterialStatePropertyAll( Size((sizeWidth * 0.2), 70) ),
+              //     ),
+              //     child: const Text('Cargar productos', style: TextStyle( color: Colors.white, fontSize: 24 ),),
+              //   ),
+              // ),
 
             ],
           ),
@@ -154,13 +154,13 @@ class MyPaginatedDataTableState extends ConsumerState<MyPaginatedDataTable> {
 class MyDataTableSource extends DataTableSource {
 
   final List<Product> dataList;
-  final Future<void> Function(String) deleteProduct;
+  final Future<void> Function(int) deleteProduct;
   final Function(Product) initFormProduct;
   final BuildContext context;
 
   MyDataTableSource(this.dataList, this.deleteProduct, this.initFormProduct, this.context);
 
-  void openDialogForm(BuildContext context, Product product ) {
+  void openDialogForm(BuildContext context ) {
     showDialog(
       context           : context,
       barrierDismissible: true,
@@ -171,7 +171,7 @@ class MyDataTableSource extends DataTableSource {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               const Text('Editar producto'),
-              IconButton(onPressed: (){
+              IconButton(onPressed: () {
                 Navigator.pop(context);
               }, icon: const Icon( Icons.cancel, size: 40,) )
             ],
@@ -201,7 +201,7 @@ class MyDataTableSource extends DataTableSource {
 
           FilledButton(
             onPressed: () {
-              deleteProduct(product.name);
+              deleteProduct(product.isarId);
               Navigator.pop(context);
             }, 
             child: const Text('Aceptar'),
@@ -233,7 +233,7 @@ class MyDataTableSource extends DataTableSource {
                 icon        : const Icon(Icons.edit),
                 onPressed   : () {
                   initFormProduct( data );
-                  openDialogForm(context, data);
+                  openDialogForm(context);
                 },
               ),
               IconButton(
