@@ -21,10 +21,10 @@ class MyPaginatedDataTableState extends ConsumerState<MyPaginatedDataTable> {
   bool _sortAscending = true;
   TextEditingController controller = TextEditingController();
 
-  void sort<T>(Comparable<T> Function(Map<dynamic, dynamic> d) getField, int columnIndex, bool ascending, List<Product> dataList) {
+  void sort<T>(Comparable<T> Function(Product d) getField, int columnIndex, bool ascending, List<Product> dataList) {
     dataList.sort((a, b) {
-      final Comparable<T> aValue = getField(a as Map);
-      final Comparable<T> bValue = getField(b as Map);
+      final Comparable<T> aValue = getField(a);
+      final Comparable<T> bValue = getField(b);
       return ascending ? Comparable.compare(aValue, bValue) : Comparable.compare(bValue, aValue);
     });
     setState(() {
@@ -107,32 +107,32 @@ class MyPaginatedDataTableState extends ConsumerState<MyPaginatedDataTable> {
             DataColumn(
               label : const Text('Nombre Producto'),
               onSort: (columnIndex, ascending) {
-                sort<String>((d) => d['name']!, columnIndex, ascending, dataList);
+                sort<String>((d) => d.name, columnIndex, ascending, dataList);
               },
             ),
             DataColumn(
               label : const Text('Unidad'),
               onSort: (columnIndex, ascending) {
-                sort<String>((d) => d['unit']!, columnIndex, ascending, dataList);
+                sort<String>((d) => d.unit, columnIndex, ascending, dataList);
               }
             ),
             DataColumn(
               label   : const Text('Stock'),
               tooltip : 'Numero de piezas de tu producto',
               onSort  : (columnIndex, ascending) {
-                sort<String>((d) => d['stock']!, columnIndex, ascending, dataList);
+                sort<String>((d) => d.stock.toString(), columnIndex, ascending, dataList);
               }
             ),
             DataColumn(
               label : const Text('Precio Mayoreo'),
               onSort: (columnIndex, ascending) {
-                sort<String>((d) => d['priceUnit'].substring(1), columnIndex, ascending, dataList);
+                sort<String>((d) => d.priceUnit.toString(), columnIndex, ascending, dataList);
               }
             ),
             DataColumn(
               label : const Text('Precio Venta'),
               onSort: (columnIndex, ascending) {
-                sort<String>((d) => d['priceSale'].substring(1), columnIndex, ascending, dataList);
+                sort<String>((d) => d.priceSale.toString(), columnIndex, ascending, dataList);
               }
             ),
             const DataColumn(

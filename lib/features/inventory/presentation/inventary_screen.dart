@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:inventario_app/config/config.dart';
 
-import 'providers/providers.dart';
+// import 'providers/providers.dart';
 import 'views/data_table_view.dart';
 import 'views/form_add_product_view.dart';
 
@@ -25,18 +25,18 @@ class InventaryScreen extends ConsumerWidget {
           centerTitle     : false,
           backgroundColor : colorSeed,
           title : Text('Inventario App', style: titleStyle ),
-          actions: [
+          // actions: [
 
-            Padding(
-              padding : const EdgeInsets.symmetric( horizontal: 20, vertical: 10 ),
-              child   : IconButton(
-                onPressed : () {
-                  ref.read(productProvider.notifier).createBackUp();
-                }, 
-                icon      : const Icon( Icons.save_alt_rounded, color: Colors.white, size: 34, )
-              ),
-            ),
-          ],
+          //   Padding(
+          //     padding : const EdgeInsets.symmetric( horizontal: 20, vertical: 10 ),
+          //     child   : IconButton(
+          //       onPressed : () {
+          //         ref.read(productProvider.notifier).createBackUp();
+          //       }, 
+          //       icon      : const Icon( Icons.save_alt_rounded, color: Colors.white, size: 34, )
+          //     ),
+          //   ),
+          // ],
           bottom: TabBar(
             enableFeedback  : true,
             indicatorColor  : Colors.pinkAccent,
