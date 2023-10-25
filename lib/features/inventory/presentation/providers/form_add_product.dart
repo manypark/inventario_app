@@ -45,6 +45,10 @@ class ProductFormNotifier extends StateNotifier<ProductFormState> {
 
     state = state.copyWith( form:newForm, product:product );
   }
+
+  void resetForm() {
+    state.form?.reset();
+  }
   
 }
 

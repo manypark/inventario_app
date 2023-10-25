@@ -7,5 +7,6 @@ abstract class LocalDbRepository {
   Future<dynamic> getProductByName( String nameProduct );
   Future<void> editProduct(  int idProduct, Product product );
   Future<void> deleteProduct( int idProduct );
+  Future<void> createBackUp();
   
 }

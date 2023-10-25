@@ -1,15 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:inventario_app/config/config.dart';
 
+import 'providers/providers.dart';
 import 'views/data_table_view.dart';
 import 'views/form_add_product_view.dart';
 
-class InventaryScreen extends StatelessWidget {
+class InventaryScreen extends ConsumerWidget {
   
   const InventaryScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build( BuildContext context, ref ) {
 
     final titleStyle  = Theme.of(context).textTheme.titleLarge;
     final titleMedium = Theme.of(context).textTheme.titleMedium;
@@ -23,6 +25,18 @@ class InventaryScreen extends StatelessWidget {
           centerTitle     : false,
           backgroundColor : colorSeed,
           title : Text('Inventario App', style: titleStyle ),
+          actions: [
+
+            Padding(
+              padding : const EdgeInsets.symmetric( horizontal: 20, vertical: 10 ),
+              child   : IconButton(
+                onPressed : () {
+                  ref.read(productProvider.notifier).createBackUp();
+                }, 
+                icon      : const Icon( Icons.save_alt_rounded, color: Colors.white, size: 34, )
+              ),
+            ),
+          ],
           bottom: TabBar(
             enableFeedback  : true,
             indicatorColor  : Colors.pinkAccent,

@@ -137,7 +137,7 @@ class FormView extends ConsumerWidget {
       
               const SizedBox( height: 40 ),
       
-              // Precio unitario, precio venta
+              // Precio mayoreo, precio venta
               Row(
                 children: [
       
@@ -146,14 +146,14 @@ class FormView extends ConsumerWidget {
                     child: ReactiveTextField(
                       formControlName: 'priceUnit',
                       validationMessages: {
-                        'required': (error) => 'El precio unitario no puede ser vacío',
+                        'required': (error) => 'El precio de mayoreo no puede ser vacío',
                       },
                       style          : const TextStyle( fontSize: 24 ),
                       inputFormatters: [
                         FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
                       ],
                       decoration: const InputDecoration(
-                        labelText : 'Precio unitario',
+                        labelText : 'Precio Mayoreo',
                         hintText  : 'Precio',
                         border    : OutlineInputBorder(
                           borderRadius: BorderRadius.all( Radius.circular( 10 ) ),

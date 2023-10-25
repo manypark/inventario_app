@@ -124,7 +124,7 @@ class MyPaginatedDataTableState extends ConsumerState<MyPaginatedDataTable> {
               }
             ),
             DataColumn(
-              label : const Text('Precio Unitario'),
+              label : const Text('Precio Mayoreo'),
               onSort: (columnIndex, ascending) {
                 sort<String>((d) => d['priceUnit'].substring(1), columnIndex, ascending, dataList);
               }
@@ -143,6 +143,7 @@ class MyPaginatedDataTableState extends ConsumerState<MyPaginatedDataTable> {
             dataList, 
             ref.read(productProvider.notifier).deleteProduct,
             ref.read(productFormProvider.notifier).initForm,
+            ref.read(productFormProvider.notifier).resetForm,
             context
           ),
         ),
@@ -156,14 +157,21 @@ class MyDataTableSource extends DataTableSource {
   final List<Product> dataList;
   final Future<void> Function(int) deleteProduct;
   final Function(Product) initFormProduct;
+  final void Function() resetForm;
   final BuildContext context;
 
-  MyDataTableSource(this.dataList, this.deleteProduct, this.initFormProduct, this.context);
+  MyDataTableSource(
+    this.dataList, 
+    this.deleteProduct, 
+    this.initFormProduct,
+    this.resetForm,
+    this.context,
+  );
 
   void openDialogForm(BuildContext context ) {
     showDialog(
       context           : context,
-      barrierDismissible: true,
+      barrierDismissible: false,
       useSafeArea       : true,
       builder           : (context) {
         return AlertDialog(
@@ -171,9 +179,13 @@ class MyDataTableSource extends DataTableSource {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               const Text('Editar producto'),
-              IconButton(onPressed: () {
-                Navigator.pop(context);
-              }, icon: const Icon( Icons.cancel, size: 40,) )
+              IconButton(
+                onPressed : () {
+                  resetForm();
+                  Navigator.pop(context);
+                }, 
+                icon      : const Icon( Icons.cancel, size: 40 ) ,
+              )
             ],
           ),
           content: const FormViewAddProduct(),

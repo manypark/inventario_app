@@ -34,4 +34,9 @@ class LocalDbRepositoryImpl extends LocalDbRepository {
     return datasource.getProducts();
   }
   
+  @override
+  Future<void> createBackUp() {
+    return datasource.createBackUp();
+  }
+  
 }
