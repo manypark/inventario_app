@@ -39,4 +39,9 @@ class LocalDbRepositoryImpl extends LocalDbRepository {
     return datasource.createBackUp();
   }
   
+  @override
+  Future<Product?> getProductByNameExac(String nameProduct) {
+    return datasource.getProductByNameExac( nameProduct );
+  }
+  
 }

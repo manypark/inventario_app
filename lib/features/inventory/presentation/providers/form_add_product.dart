@@ -22,14 +22,18 @@ class ProductFormNotifier extends StateNotifier<ProductFormState> {
     required this.productNotifier
   }):super( ProductFormState() );
 
-  void onSubmit( Product product ) async {
+  Future<Product?> onSubmit( Product product ) async {
 
-    state.form?.reset();
+    final productSearch = await productNotifier.addProduct(product);
+    
+    if( productSearch == null ){
+      state.form?.reset();
+    }
 
     state = state.copyWith( product:product );
 
-    await productNotifier.addProduct(product);
 
+    return productSearch;
   }
 
   void onSubmitEdit( Product newProduct ) async {

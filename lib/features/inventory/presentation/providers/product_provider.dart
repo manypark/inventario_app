@@ -17,11 +17,20 @@ class ProductNotifier extends StateNotifier<ProductState> {
     loadProducts();
   }
 
-  Future<void> addProduct( Product product ) async {
+  Future<Product?> addProduct( Product product ) async {
 
-    await localDbRepository.addProduct(product);
+    final searchProduct = await localDbRepository.getProductByNameExac( product.name );
+
+    if( searchProduct == null ) {
+
+      await localDbRepository.addProduct(product);
+      loadProducts();
+      return null;
+    }
 
     loadProducts();
+    
+    return searchProduct;
   }
 
   Future<void> loadProducts() async {
@@ -33,7 +42,6 @@ class ProductNotifier extends StateNotifier<ProductState> {
 
   Future<void> searchProduct( String productName ) async {
 
-    // final searchProduct = state.products?.where((p) => p.name.toLowerCase().contains( product.toLowerCase() ) ).toList();
     final searchProduct = await localDbRepository.getProductByName(productName);
 
     state = state.copyWith( products: searchProduct );

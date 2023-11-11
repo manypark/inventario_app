@@ -198,15 +198,16 @@ class FormView extends ConsumerWidget {
                       padding         : const MaterialStatePropertyAll( EdgeInsets.all(12)),
                       minimumSize     : MaterialStatePropertyAll( Size((sizeWidth * 0.3), 70) ),
                     ),
-                    onPressed: !form.valid ? null : () {
+                    onPressed: !form.valid ? null : () async {
 
                       final productFormMapper = ProductMapper.jsonToEntity(form.value);
 
-                      ref.read(productFormProvider.notifier).onSubmit(productFormMapper);
+                      final productToAdd = await ref.read(productFormProvider.notifier).onSubmit(productFormMapper);
 
-                      showSnackBar( context, 'Producto nuevo agregado' );
+                      productToAdd == null ? showSnackBar( context, 'Producto nuevo agregado' ) : showSnackBar( context, 'Este producto ya existe' );
+
                     },
-                    child    : const Text('Guardar', style: TextStyle( color: Colors.white, fontSize: 24 ),),
+                    child : const Text('Guardar', style: TextStyle( color: Colors.white, fontSize: 24 ),),
                   );
                 },
               ),

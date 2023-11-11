@@ -90,6 +90,16 @@ class IsarDatasource extends LocalDbDatasource {
   }
 
   @override
+  Future<Product?> getProductByNameExac(String nameProduct) async {
+
+    final isar = await db;
+
+    final searchProduct = await isar.products.filter().nameEqualTo( nameProduct, caseSensitive: false ).findAll();
+
+    return searchProduct.isEmpty ? null : searchProduct.first;
+  }
+
+  @override
   Future<void> createBackUp() async {
 
     // Obtén el directorio de documentos del dispositivo
@@ -102,7 +112,7 @@ class IsarDatasource extends LocalDbDatasource {
     // Construye la ruta de la base de datos
     String isarDbPath = '$appDocPath/isar.db';
 
-    print(isarDbPath);
+    // print(isarDbPath);
 
     isar.copyToFile(isarDbPath);
   }
